@@ -222,6 +222,7 @@ class Intercom
      * @param  long   $createdAt              UNIX timestamp describing the date and time when the user was created (optional)
      * @param  string $lastSeenIp             The last IP address where the user was last seen (optional)
      * @param  string $lastSeenUserAgent      The last user agent of the user's browser (optional)
+     * @param  array  $companyData            Any companies data to be aggregate to the user's record (optional)
      * @param  long   $lastRequestAt          UNIX timestamp of the user's last request (optional)
      * @param  bool   $unsubscribedFromEmails The user's email subscription status (optional)
      * @param  string $method                 HTTP method, to be used by updateUser()
@@ -234,6 +235,7 @@ class Intercom
                                $createdAt = null,
                                $lastSeenIp = null,
                                $lastSeenUserAgent = null,
+                               $companyData = array(),
                                $lastRequestAt = null,
                                $unsubscribedFromEmails = null,
                                $method = 'POST')
@@ -269,6 +271,10 @@ class Intercom
         if (!empty($customData)) {
             $data['custom_data'] = $customData;
         }
+        
+        if (!empty($companyData)) {
+            $data['companies'] = $companies;
+        }
 
         if (is_bool($unsubscribedFromEmails)) {
             $data['unsubscribed_from_emails'] = $unsubscribedFromEmails;
@@ -288,6 +294,7 @@ class Intercom
      * @param  long   $createdAt              UNIX timestamp describing the date and time when the user was created (optional)
      * @param  string $lastSeenIp             The last IP address where the user was last seen (optional)
      * @param  string $lastSeenUserAgent      The last user agent of the user's browser (optional)
+     * @param  array  $companyData            Any companies data to be aggregate to the user's record (optional)
      * @param  long   $lastRequestAt          UNIX timestamp of the user's last request (optional)
      * @param  bool   $unsubscribedFromEmails The user's email subscription status (optional)
      * @return object
@@ -299,10 +306,11 @@ class Intercom
                                $createdAt = null,
                                $lastSeenIp = null,
                                $lastSeenUserAgent = null,
+                               $companyData = array(),
                                $lastRequestAt = null,
                                $unsubscribedFromEmails = null)
     {
-        return $this->createUser($id, $email, $name, $customData, $createdAt, $lastSeenIp, $lastSeenUserAgent, $lastRequestAt, $unsubscribedFromEmails, 'PUT');
+        return $this->createUser($id, $email, $name, $customData, $createdAt, $lastSeenIp, $lastSeenUserAgent, $companyData, $lastRequestAt, $unsubscribedFromEmails, 'PUT');
     }
 
     /**
