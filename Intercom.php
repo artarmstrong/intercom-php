@@ -99,9 +99,8 @@ class Intercom
 
         $ch = curl_init($url);
 
-        if ($this->debug) {
+        if ($this->debug)
             curl_setopt($ch, CURLOPT_VERBOSE, true);
-        }
 
         if ($method == 'POST') {
             curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data);
@@ -140,9 +139,8 @@ class Intercom
     {
         $path = 'users/?page=' . $page;
 
-        if (!empty($perPage)) {
+        if (!empty($perPage))
             $path .= '&per_page=' . $perPage;
-        }
 
         return $this->httpCall($this->apiEndpoint . $path);
     }
@@ -156,11 +154,10 @@ class Intercom
     public function getUser($id)
     {
         $path = 'users/';
-        if ($this->isEmail($id)) {
+        if ($this->isEmail($id))
             $path .= '?email=';
-        } else {
+        else
             $path .= '?user_id=';
-        }
         $path .= urlencode($id);
         return $this->httpCall($this->apiEndpoint . $path);
     }
@@ -174,11 +171,10 @@ class Intercom
     public function getThread($id)
     {
         $path = 'users/message_threads';
-        if ($this->isEmail($id)) {
+        if ($this->isEmail($id))
             $path .= '?email=';
-        } else {
+        else
             $path .= '?user_id=';
-        }
         $path .= urlencode($id);
         return $this->httpCall($this->apiEndpoint . $path);
     }
@@ -195,18 +191,16 @@ class Intercom
     public function createThread($userId, $email = null, $body = null, $currentUrl = null)
     {
         $data = array();
-
         $data['user_id'] = $userId;
 
-        if (!empty($email)) {
+        if (!empty($email))
             $data['email'] = $email;
-        }
       
         $data['body'] = $body;
 
-        if (!empty($currentUrl)) {
+        if (!empty($currentUrl))
             $data['current_url'] = $currentUrl;
-        }
+
         $path = 'users/message_threads';
 
         return $this->httpCall($this->apiEndpoint . $path, 'POST', json_encode($data));
@@ -244,42 +238,16 @@ class Intercom
 
         $data['user_id'] = $id;
 
-        if (!empty($email)) {
-            $data['email'] = $email;
-        }
-
-        if (!empty($name)) {
-            $data['name'] = $name;
-        }
-
-        if (!empty($createdAt)) {
-            $data['created_at'] = $createdAt;
-        }
-
-        if (!empty($lastSeenIp)) {
-            $data['last_seen_ip'] = $lastSeenIp;
-        }
-
-        if (!empty($lastSeenUserAgent)) {
-            $data['last_seen_user_agent'] = $lastSeenUserAgent;
-        }
-
-        if (!empty($lastRequestAt)) {
-            $data['last_request_at'] = $lastRequestAt;
-        }
-
-        if (!empty($customData)) {
-            $data['custom_data'] = $customData;
-        }
+        if (!empty($email)) $data['email'] = $email;
+        if (!empty($name)) $data['name'] = $name;
+        if (!empty($createdAt)) $data['created_at'] = $createdAt;
+        if (!empty($lastSeenIp)) $data['last_seen_ip'] = $lastSeenIp;
+        if (!empty($lastSeenUserAgent)) $data['last_seen_user_agent'] = $lastSeenUserAgent;
+        if (!empty($lastRequestAt)) $data['last_request_at'] = $lastRequestAt;
+        if (!empty($customData)) $data['custom_data'] = $customData;
+        if (!empty($companyData)) $data['companies'] = $companies;
+        if (is_bool($unsubscribedFromEmails)) $data['unsubscribed_from_emails'] = $unsubscribedFromEmails;
         
-        if (!empty($companyData)) {
-            $data['companies'] = $companies;
-        }
-
-        if (is_bool($unsubscribedFromEmails)) {
-            $data['unsubscribed_from_emails'] = $unsubscribedFromEmails;
-        }
-
         $path = 'users';
         return $this->httpCall($this->apiEndpoint . $path, $method, json_encode($data));
     }
@@ -322,11 +290,10 @@ class Intercom
     public function deleteUser($id)
     {
         $path = 'users/';
-        if ($this->isEmail($id)) {
+        if ($this->isEmail($id))
             $path .= '?email=';
-        } else {
+        else
             $path .= '?user_id=';
-        }
         $path .= urlencode($id);
         return $this->httpCall($this->apiEndpoint . $path, 'DELETE');
     }
@@ -344,24 +311,12 @@ class Intercom
     public function createImpression($userId, $email = null, $userIp = null, $userAgent = null, $currentUrl = null)
     {
         $data = array();
-
         $data['user_id'] = $userId;
 
-        if (!empty($email)) {
-            $data['email'] = $email;
-        }
-
-        if (!empty($userIp)) {
-            $data['user_ip'] = $userIp;
-        }
-
-        if (!empty($userAgent)) {
-            $data['user_agent'] = $userAgent;
-        }
-
-        if (!empty($currentUrl)) {
-            $data['current_url'] = $currentUrl;
-        }
+        if (!empty($email)) $data['email'] = $email;
+        if (!empty($userIp)) $data['user_ip'] = $userIp;
+        if (!empty($userAgent)) $data['user_agent'] = $userAgent;
+        if (!empty($currentUrl)) $data['current_url'] = $currentUrl;
         $path = 'users/impressions';
 
         return $this->httpCall($this->apiEndpoint . $path, 'POST', json_encode($data));
@@ -410,28 +365,13 @@ class Intercom
                                $method = "POST")
     {
         $data = array();
-
         $data['name'] = $name;
 
-        if (!empty($email)) {
-            $data['email'] = $email;
-        }
-
-        if (!empty($action)) {
-            $data['tag_or_untag'] = $action;
-        }
-
-        if (!empty($emails)) {      
-            $data['emails'] = $emails;
-        }
-
-        if (!empty($userIds)) {     
-            $data['user_ids'] = $userIds;
-        }
-
-        if (!empty($color)) {
-            $data['color'] = $color;
-        }
+        if (!empty($email)) $data['email'] = $email;
+        if (!empty($action)) $data['tag_or_untag'] = $action;
+        if (!empty($emails)) $data['emails'] = $emails;
+        if (!empty($userIds)) $data['user_ids'] = $userIds;
+        if (!empty($color)) $data['color'] = $color;
 
         $path = 'tags';
         return $this->httpCall($this->apiEndpoint . $path, $method, json_encode($data));
