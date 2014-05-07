@@ -67,11 +67,11 @@ class Intercom
      * @param  string $debug  Optional debug flag
      * @return void
      **/
-    public function __construct($appId, $apiKey, $debug = false)
+    public function __construct()
     {
-        $this->appId = $appId;
-        $this->apiKey = $apiKey;
-        $this->debug = $debug;
+        $this->appId = INTERCOM_APP_ID;
+        $this->apiKey = INTERCOM_API_KEY;
+        $this->debug = false;
     }
 
     /**
