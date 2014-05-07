@@ -1,6 +1,6 @@
 {
     "name": "nubera-ebusiness/intercom-php",
-    "version": "0.1.4",
+    "version": "0.1.6",
     "type": "library",
     "description": "Connectivity with the Intercom API",
     "keywords": ["intercom","api"],
@@ -19,5 +19,8 @@
     },
     "autoload": {
         "classmap": ["Intercom.php"]
-    }    
+    },
+    "require-dev": {
+        "phpunit/phpunit": "3.7.*"
+    }
 }

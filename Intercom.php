@@ -2,28 +2,28 @@
 /**
  * Intercom is a customer relationship management and messaging tool for web app owners
  * 
- * This library provides connectivity with the Intercom API (https://api.intercom.io)
+ * This library provides connectivity with the Intercom API (http://doc.intercom.io/api/)
  * 
  * Basic usage:
  * 
  * 1. Configure Intercom with your access credentials
  * <code>
  * <?php
- * $intercom = new Intercom('dummy-app-id', 'dummy-api-key');
+ * $intercom = new Intercom('YOUR_APP_ID', 'YOUR_API_KEY');
  * ?>
  * </code>
  * 
  * 2. Make requests to the API
  * <code>
  * <?php
- * $intercom = new Intercom('dummy-app-id', 'dummy-api-key');
+ * $intercom = new Intercom('YOUR_APP_ID', 'YOUR_API_KEY');
  * $users = $intercom->getAllUsers();
  * var_dump($users);
  * ?>
  * </code>
  * 
- * @author    Bruno Pedro <bruno.pedro@cloudwork.com>
- * @copyright Copyright 2013 Nubera eBusiness S.L. All rights reserved.
+ * @author    Bruno Pedro <bruno.pedro@getapp.com>
+ * @copyright Copyright 2013-2014 Nubera eBusiness S.L. All rights reserved.
  * @link      http://www.nubera.com/
  * @license   http://opensource.org/licenses/MIT
  **/
@@ -80,7 +80,7 @@ class Intercom
      * @param  string $value
      * @return boolean
      **/
-    private function isEmail($value)
+    protected function isEmail($value)
     {
         return filter_var($value, FILTER_VALIDATE_EMAIL);
     }
@@ -93,7 +93,7 @@ class Intercom
      * @param  string $post_data The data to send on an HTTP POST (optional)
      * @return object
      **/
-    private function httpCall($url, $method = 'GET', $post_data = null)
+    protected function httpCall($url, $method = 'GET', $post_data = null)
     {
         $headers = array('Content-Type: application/json');
 
@@ -123,7 +123,10 @@ class Intercom
         $response = curl_exec($ch);
 
         // Set HTTP error, if any
-        $this->lastError = array('code' => curl_errno($ch), 'message' => curl_error($ch));
+        $this->lastError = array('code' => curl_errno($ch),
+                                 'message' => curl_error($ch),
+                                 'httpCode' => curl_getinfo($ch, CURLINFO_HTTP_CODE));
+
 
         return json_decode($response);
     }
@@ -323,9 +326,52 @@ class Intercom
     }
 
     /**
+     * Create an event associated with a user on your Intercom account
+     * 
+     * @param  string $userId     The ID of the user
+     * @param  string $eventName  Tge name of the event
+     * #param  array  $metadata   The metadata associated with the event (optional) 
+     * @param  string $email      The email of the user (optional)
+     * @param  string $created    The time at which the event occurred (optional)
+     * @return object
+     **/
+    public function createEvent($userId, $eventName, $metadata = null, $email = null, $created = null)
+    {
+        $data = array();
+
+        $data['user_id'] = $userId;
+
+        if (!empty($eventName)) {
+            $data['event_name'] = $eventName;
+        }
+
+        if (!empty($email)) {
+            $data['email'] = $email;
+        }
+
+        if (!empty($metadata)) {
+            $data['metadata'] = $metadata;
+        }
+
+        if (!empty($created)) {
+            $data['created'] = $created;
+        } else {
+            $data['created'] = time();
+        }
+
+        $path = 'events/';
+
+        return $this->httpCall(
+            str_replace('/v1', '', $this->apiEndpoint) . $path,
+            'POST',
+            json_encode($data)
+        );
+    }
+
+    /**
      * Get the last error from curl.
      * 
-     * @return array Array with 'code' and 'message' indexes
+     * @return array Array with 'code', 'message' and 'httpCode' indexes
      */
     public function getLastError()
     {
@@ -356,6 +402,7 @@ class Intercom
      * @param  string $color        The color of the tag (must be "green", "red", "teal", "gold", "blue", or "purple").
      * @param  string $action       required (if emails or userIds are not empty) — either "tag" or "untag"
      * @param  string $method       HTTP method, to be used by updateTag()
+     * @return object
      **/
     public function createTag($name,
                                $emails = null,
@@ -385,6 +432,7 @@ class Intercom
      * @param  array  $userIds      Array of user ids to tag (optional)
      * @param  string $color        The color of the tag (must be "green", "red", "teal", "gold", "blue", or "purple").
      * @param  string $action       required (if emails or userIds are not empty) — either "tag" or "untag"
+     * @return object
      **/
     public function updateTag($name,
                                $emails = null,
